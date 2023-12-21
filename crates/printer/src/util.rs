@@ -417,7 +417,7 @@ impl DecimalFormatter {
 
     /// Create a new decimal formatter for the given 64-bit unsigned integer.
     pub(crate) fn new(mut n: u64) -> DecimalFormatter {
-        let mut buf = [0; Self::MAX_U64_LEN];
+        let mut buf = [32; Self::MAX_U64_LEN];
         let mut i = buf.len();
         loop {
             i -= 1;
@@ -434,7 +434,11 @@ impl DecimalFormatter {
 
     /// Return the decimal formatted as an ASCII byte string.
     pub(crate) fn as_bytes(&self) -> &[u8] {
-        &self.buf[self.start..]
+        let mut start = self.start;
+        if start > 16 {
+            start = 16;
+        }
+        &self.buf[start..]
     }
 }
 
